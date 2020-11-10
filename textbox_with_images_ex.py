@@ -1,6 +1,7 @@
-"""Python Tkinter GUI Tutorial #101 and #102
-Add images to Text Box Widgets and
-Text Widget Bold and Italics
+"""Python Tkinter GUI Tutorial #101, #102, #103
+Add images to Text Box Widgets,
+Text Widget Bold and Italics,
+Undo and Redo functionality
 """
 from tkinter import *
 from tkinter import filedialog
@@ -28,6 +29,7 @@ class MultilineText(Frame):
             selectbackground="yellow",
             selectforeground="black",
             yscrollcommand=self.scroll.set,
+            undo=True,
         )
         self.txtbox.pack()
 
@@ -62,10 +64,17 @@ class MultilineText(Frame):
 
         self.edition_frame = Frame(master=master, width=12)
         self.edition_frame.grid(column=2, row=2, pady=10, padx=10)
-        self.btn_b = Button(self.edition_frame, width=4, text="B", command=self.bold_text)
-        self.btn_b.grid(column=0, row=0, pady=10)
-        self.btn_i = Button(self.edition_frame, width=4, text="I", command=self.italic_text)
-        self.btn_i.grid(column=1, row=0, pady=10)
+        self.btn_bold = Button(self.edition_frame, width=4, text="B", command=self.bold_text)
+        self.btn_bold.grid(column=0, row=0, pady=10)
+        self.btn_italic = Button(self.edition_frame, width=4, text="I", command=self.italic_text)
+        self.btn_italic.grid(column=1, row=0, pady=10)
+
+        self.undoredo_frame = Frame(master=master, width=12)
+        self.undoredo_frame.grid(column=0, row=3, padx=10)
+        self.btn_undo = Button(self.undoredo_frame, width=4, text="Undo", command=self.txtbox.edit_undo)
+        self.btn_undo.grid(column=0, row=0, pady=10)
+        self.btn_redo = Button(self.undoredo_frame, width=4, text="Redo", command=self.txtbox.edit_redo)
+        self.btn_redo.grid(column=1, row=0, pady=10)
 
     def clear_text(self):
         """Clear whole textbox"""
@@ -80,9 +89,7 @@ class MultilineText(Frame):
         """Make selected text bold"""
         bold_font = font.Font(self.txtbox, self.txtbox.cget("font"))
         bold_font.configure(weight="bold")
-
         self.txtbox.tag_config("bold", font=bold_font)
-
         current_tags = self.txtbox.tag_names("sel.first")
 
         if "bold" in current_tags:
@@ -94,9 +101,7 @@ class MultilineText(Frame):
         """Make selected text italic"""
         italic_font = font.Font(self.txtbox, self.txtbox.cget("font"))
         italic_font.configure(slant="italic")
-
         self.txtbox.tag_config("italic", font=italic_font)
-
         current_tags = self.txtbox.tag_names("sel.first")
 
         if "italic" in current_tags:
@@ -114,7 +119,6 @@ class MultilineText(Frame):
 
 class FileHandler:
     """Class to handle file loading and saving"""
-
     @staticmethod
     def get_file():
         options = dict(
